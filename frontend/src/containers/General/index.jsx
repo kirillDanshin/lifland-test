@@ -7,7 +7,7 @@ import ErrorComponent from '../../components/Error';
 import styles from './index.css';
 
 const mapStateToProps = state => ({
-	errorMessage: state.error,
+	errorMessage: state.error.message,
 });
 
 @connect(mapStateToProps, { connectServer })
