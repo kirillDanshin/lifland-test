@@ -33,7 +33,7 @@ module.exports = {
 		new webpack.NoErrorsPlugin(),
 		new HtmlWebpackPlugin({
 			template: './frontend/src/index.html',
-			inject: true,
+			inject: false,
 		}),
 		new webpack.optimize.DedupePlugin(),
 		new ExtractTextPlugin('static/css/styles.css', {}),
