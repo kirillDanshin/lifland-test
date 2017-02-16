@@ -1,26 +1,11 @@
 package main
 
 import (
-	"bufio"
-	"encoding/json"
 	"flag"
-	"fmt"
-	"io"
-	"log"
-	"os"
-	"strings"
+	"time"
 
-	"github.com/buaazp/fasthttprouter"
-	"github.com/kirillDanshin/myutils"
-	"github.com/valyala/fasthttp"
-)
-
-const (
-	static = "/static"
-	all    = "/*route"
-	index  = "/index.html"
-	route  = "route"
-	ise    = "Internal server error"
+	"github.com/gramework/gramework"
+	"github.com/gramework/gramework/apiClient"
 )
 
 var (
@@ -28,50 +13,21 @@ var (
 	conf = flag.String("conf", "./config.json", "path to config file (json)")
 )
 
-func handler(ctx *fasthttp.RequestCtx) {
-	myRoute := ctx.UserValue(route)
-	if myRoute == nil {
-		ctx.Error(ise, 500)
-		return
-	}
-	localRoute := myRoute.(string)
-	if strings.HasPrefix(localRoute, static) {
-		fasthttp.ServeFile(ctx, myutils.Concat(*dir, localRoute))
-		return
-	}
-	fasthttp.ServeFile(ctx, myutils.Concat(*dir, index))
-}
-
 func main() {
 	flag.Parse()
+	app := gramework.New()
+	c := readConfig(app)
 
-	confFile, err := os.Open(*conf)
-	if err != nil {
-		log.Fatal(err)
-	}
+	btcUSD := apiClient.New(apiClient.Config{
+		Addresses: []string{
+			"https://api.cryptonator.com/api/full/btc-usd",
+		},
+		WatcherTickTime: 5 * time.Second,
+	})
 
-	confReader := bufio.NewReader(confFile)
+	app.NotFound(handler)
+	app.GET("/subscribe", btcUSD.WSHandler())
 
-	dec := json.NewDecoder(confReader)
-	var c Config
-	if err := dec.Decode(&c); err != nil && err != io.EOF {
-		log.Fatal(err)
-	}
-
-	confFile.Close()
-
-	host := c.Host
-	port := fmt.Sprintf("%v", c.Port)
-	var addr string
-	if port == "" || port == "80" {
-		addr = host
-	} else {
-		addr = myutils.Concat(host, ":", port)
-	}
-
-	r := fasthttprouter.New()
-	r.GET(all, handler)
-
-	log.Printf("Serving %s on %s\n", *dir, addr)
-	fasthttp.ListenAndServe(addr, r.Handler)
+	app.Logger.Infof("Serving %s on %s\n", *dir, c.Addr)
+	app.ListenAndServe(c.Addr)
 }
