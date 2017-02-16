@@ -1,0 +1,4 @@
+node_modules
+*.log
+frontend/dist
+/lifland-test
