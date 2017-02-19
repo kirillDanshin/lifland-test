@@ -45,6 +45,9 @@ module.exports = {
 	module: {
 		loaders: [
 			{
+				test: /\.json$/,
+				loader: 'json-loader',
+			}, {
 				test: /\.(js|jsx)$/,
 				loaders: ['babel'],
 				exclude: /node_modules/,
@@ -64,6 +67,9 @@ module.exports = {
 			}, {
 				test: /\.(ttf|eot|svg|woff(2)?)(\?[a-z0-9]+)?$/,
 				loader: 'file-loader?name=/static/fonts/[hash].[ext]',
+			}, {
+				test: /\.(mp4|webm|ogv)(\?[a-z0-9]+)?$/,
+				loader: 'file-loader?name=/static/video/[hash].[ext]',
 			},
 		],
 	},
@@ -106,4 +112,6 @@ if (NODE_ENV === 'production') {
 			},
 		})
 	);
+
+	delete module.exports.devtool;
 }

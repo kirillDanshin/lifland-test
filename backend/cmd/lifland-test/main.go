@@ -2,10 +2,9 @@ package main
 
 import (
 	"flag"
-	"time"
+	"log"
 
 	"github.com/gramework/gramework"
-	"github.com/gramework/gramework/apiClient"
 )
 
 var (
@@ -15,19 +14,19 @@ var (
 
 func main() {
 	flag.Parse()
+	ticker, err := NewTicker("btc-usd", "btc-eur", "eur-usd")
+	if err != nil {
+		log.Fatalf("could not initialize the ticker: %s", err)
+	}
+	ticker.Update()
+	go ticker.Updater()
+
 	app := gramework.New()
 	c := readConfig(app)
 
-	btcUSD := apiClient.New(apiClient.Config{
-		Addresses: []string{
-			"https://api.cryptonator.com/api/full/btc-usd",
-		},
-		WatcherTickTime: 5 * time.Second,
-	})
-
 	app.NotFound(handler)
-	app.GET("/subscribe", btcUSD.WSHandler())
+	app.GET("/subscribe", subscribeServer(ticker))
 
 	app.Logger.Infof("Serving %s on %s\n", *dir, c.Addr)
-	app.ListenAndServe(c.Addr)
+	log.Fatalln(app.ListenAndServe(c.Addr))
 }

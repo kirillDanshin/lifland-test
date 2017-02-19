@@ -4,6 +4,7 @@ import CSSModules from 'react-css-modules';
 import { connect } from 'react-redux';
 import { connect as connectServer } from '../../actions/connection';
 import ErrorComponent from '../../components/Error';
+import Ticker from '../../components/Ticker';
 import styles from './index.css';
 
 const mapStateToProps = state => ({
@@ -26,8 +27,8 @@ export default class General extends Component {
 		const { errorMessage } = this.props;
 
 		return (
-			<div>
-				<div>Запилил.</div>
+			<div styleName="container">
+				<Ticker />
 				<ErrorComponent message={errorMessage} />
 			</div>
 		);

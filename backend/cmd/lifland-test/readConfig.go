@@ -30,11 +30,11 @@ func readConfig(app *gramework.App) *Config {
 	host := c.Host
 	port := fmt.Sprintf("%v", c.Port)
 	var addr string
-	if port == "" || port == "80" {
-		addr = host
-	} else {
-		addr = myutils.Concat(host, ":", port)
+	if port == "" {
+		port = "80"
 	}
+	addr = myutils.Concat(host, ":", port)
+
 	c.Addr = addr
 
 	return &c

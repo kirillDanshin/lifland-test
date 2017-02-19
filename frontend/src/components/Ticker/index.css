@@ -1,0 +1,38 @@
+.marquee-container {
+	z-index: 2;
+	width: 100%;
+    margin: auto;
+    overflow-x: hidden;
+    white-space: nowrap;
+	transform: translateZ(0.001);
+	height: 100%;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+.marquee:hover {
+    animation-play-state: paused
+}
+
+.marquee {
+    animation: marquee 30s linear infinite;
+	width: 100%;
+	opacity: 0.6;
+	background: rgba(255, 255, 255, 0.8);
+	color: #000;
+}
+
+
+
+@keyframes marquee {
+    0%   { text-indent: 100% }
+    100% { text-indent: -50% }
+}
+
+.marquee > span {
+	text-indent: 0;
+	position: relative;
+	display: inline-block;
+	padding: 20px;
+}

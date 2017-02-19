@@ -58,6 +58,7 @@
     "file-loader": "^0.8.5",
     "flow-bin": "^0.38.0",
     "html-webpack-plugin": "^2.26.0",
+    "json-loader": "^0.5.4",
     "postcss-assets": "^4.1.0",
     "postcss-cssnext": "^2.8.0",
     "postcss-easy-import": "^1.0.1",
